@@ -9,40 +9,44 @@ import InfoModal from '@/components/InfoModal';
 import useMovieList from '@/hooks/useMovieList';
 import useFavorites from '@/hooks/useFavorites';
 import useInfoModalStore from '@/hooks/useInfoModalStore';
+import useComedy from '@/hooks/useComedy';
 
 export async function getServerSideProps(context: NextPageContext) {
-  const session = await getSession(context);
+	const session = await getSession(context);
 
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/auth',
-        permanent: false,
-      }
-    }
-  }
+	if (!session) {
+		return {
+			redirect: {
+				destination: '/auth',
+				permanent: false,
+			},
+		};
+	}
 
-  return {
-    props: {}
-  }
+	return {
+		props: {},
+	};
 }
 
 const Home = () => {
-  const { data: movies = [] } = useMovieList();
-  const { data: favorites = [] } = useFavorites();
-  const {isOpen, closeModal} = useInfoModalStore();
+	const { data: movies = [] } = useMovieList();
+	const { data: comedies = [] } = useComedy();
+	const { data: favorites = [] } = useFavorites();
+	const { isOpen, closeModal } = useInfoModalStore();
 
-  return (
-    <>
-      <InfoModal visible={isOpen} onClose={closeModal} />
-      <Navbar />
-      <Billboard />
-      <div className="pb-40">
-        <MovieList title="Trending Now" data={movies} />
-        <MovieList title="My List" data={favorites} />
-      </div>
-    </>
-  )
-}
+	return (
+		<>
+			<InfoModal visible={isOpen} onClose={closeModal} />
+			<Navbar />
+			<Billboard />
+			<div className='pb-40'>
+				<MovieList title='Trending Now' data={movies} />
+				<MovieList title='New' data={movies} />
+				<MovieList title='Comedy' data={comedies} />
+				<MovieList title='My List' data={favorites} />
+			</div>
+		</>
+	);
+};
 
 export default Home;
